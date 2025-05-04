@@ -1,0 +1,21 @@
+services:
+  postgres:
+    container_name: postgres-db
+    image: postgres:alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ziraa_data:/var/lib/postgresql/data
+    networks:
+      - ziraa-network
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=ziraa
+
+volumes:
+  ziraa_data:
+
+networks:
+  ziraa-network:
+    driver: bridge

@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+  output = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+ DEVELOPER
+ TECH_LEAD
+ ADMIN
+}
+
+enum Status {
+  TODO
+  IN_PROGRESS
+  PEER_REVIEW
+  READY_FOR_QA
+  DONE
+}
+
+enum Priority {
+  LOW
+  LOWEST
+  MEDIUM
+  HIGH
+  HIGHEST
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(DEVELOPER)
+  project   String   
+  tickets   Ticket[] @relation("CreatedTickets")
+  assigned  Ticket[] @relation("AssignedTickets")
+  comments  Comment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ticket {
+  id          String    @id @default(uuid())
+  workType  String
+  summary       String
+  description String
+  status      Status    @default(TODO)
+  priority    Priority  @default(MEDIUM)
+  createdBy   User      @relation("CreatedTickets", fields: [createdById], references: [id])
+  createdById String
+  assignedTo  User?     @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  assignedToId String?
+  comments    Comment[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  comment   String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  ticketId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
