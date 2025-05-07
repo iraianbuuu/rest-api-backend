@@ -1,4 +1,4 @@
-export class UserController {
+export class UserService {
   async getUsersById() {}
 
   async updateUserById() {}
