@@ -1,6 +1,8 @@
 import { Role } from '@prisma/client';
 import prisma from '../../config/prisma';
-
+import { prismaError } from 'prisma-better-errors';
+import jwt from 'jsonwebtoken';
+import { config } from '../../config';
 class AuthService {
   async registerUser(
     email: string,
@@ -9,35 +11,45 @@ class AuthService {
     role: string,
     project: string,
   ) {
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password,
-        role: role as Role,
-        project,
-      },
-    });
-
-    if (!user) {
-      throw new Error('User not created');
+    try {
+      const user = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password,
+          role: role as Role,
+          project,
+        },
+      });
+      if (!user) {
+        throw new Error('Unable to create user');
+      }
+    } catch (error: any) {
+      throw new prismaError(error);
     }
-    return user;
   }
 
   async loginUser(email: string, password: string) {
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-        password,
-      },
-    });
-
-    if (!user) {
-      throw new Error('User not found');
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          email,
+          password,
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+      const token = jwt.sign(
+        { id: user?.id, name: user?.name },
+        config.secretKey,
+        { expiresIn: '1h' },
+      );
+      return { token };
+    } catch (error: any) {
+      throw new prismaError(error);
     }
-
-    return user;
   }
 }
 

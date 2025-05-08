@@ -40,6 +40,7 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "prisma-better-errors": "^1.0.4",
     "zod": "^3.24.4"
   },
   "lint-staged": {
