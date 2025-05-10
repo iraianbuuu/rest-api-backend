@@ -7,6 +7,9 @@ class UserService {
       const user = await prisma.user.findUnique({
         where: { id },
       });
+      if (!user) {
+        throw new Error('User not found');
+      }
       return user;
     } catch (error: any) {
       throw new prismaError(error);
@@ -30,6 +33,9 @@ class UserService {
           project: project,
         },
       });
+      if (!user) {
+        throw new Error('User not found');
+      }
       return user;
     } catch (error: any) {
       throw new prismaError(error);
@@ -41,6 +47,9 @@ class UserService {
       const user = await prisma.user.delete({
         where: { id },
       });
+      if (!user) {
+        throw new Error('User not found');
+      }
       return user;
     } catch (error: any) {
       throw new prismaError(error);
