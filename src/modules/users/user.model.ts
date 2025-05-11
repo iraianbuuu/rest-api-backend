@@ -9,4 +9,5 @@ export interface UserResponse {
 export interface UserPayload {
   id: string;
   name: string;
+  role: string;
 }

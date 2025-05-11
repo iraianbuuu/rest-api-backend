@@ -19,7 +19,7 @@ export const errorMiddleware = (
       metaData: err.metaData,
     });
   } else {
-    logger.error(`Unhandled Error: ${err.message}`);
+    logger.error({ message: err.message });
     const internalError = new InternalServerErrorException(err.message);
     return GlobalException.handle(internalError, res);
   }

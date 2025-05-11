@@ -4,11 +4,11 @@ import { StatusCode } from '../../utils/status-code';
 const authService = new AuthService();
 const { registerUser, loginUser } = authService;
 class AuthController {
-  async registerUser(
+  registerUser = async (
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<void> {
+  ): Promise<void> => {
     try {
       const { email, password, name, role, project } = req.body;
       const user = await registerUser(email, password, name, role, project);
@@ -18,19 +18,24 @@ class AuthController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  async loginUser(req: Request, res: Response, next: NextFunction) {
+  loginUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       const { email, password } = req.body;
       const authToken = await loginUser(email, password);
+      const token = authToken?.token;
       res
         .status(StatusCode.OK)
-        .json({ message: 'User logged in successfully', authToken });
+        .json({ message: 'User logged in successfully', token });
     } catch (error) {
       next(error);
     }
-  }
+  };
 }
 
 export default AuthController;

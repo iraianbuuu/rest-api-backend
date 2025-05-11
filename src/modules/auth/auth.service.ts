@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { config } from '../../config';
 import { handleError } from '../../utils';
 import { UnauthorizedException } from '../../exceptions/custom.exception';
+import { UserPayload } from '../users/user.model';
 class AuthService {
   async registerUser(
     email: string,
@@ -37,16 +38,20 @@ class AuthService {
         select: {
           id: true,
           name: true,
+          role: true,
         },
       });
       if (!user) {
         throw new UnauthorizedException('Invalid credentials');
       }
-      const token = jwt.sign(
-        { id: user?.id, name: user?.name },
-        config.secretKey,
-        { expiresIn: '1h' },
-      );
+      const userPayload: UserPayload = {
+        id: user.id,
+        name: user.name,
+        role: user.role as Role,
+      };
+      const token = jwt.sign(userPayload, config.secretKey, {
+        expiresIn: '1h',
+      });
       return { token };
     } catch (error: unknown) {
       handleError(error);
