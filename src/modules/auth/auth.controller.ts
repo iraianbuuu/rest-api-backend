@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import AuthService from './auth.service';
 import { StatusCode } from '../../utils/status-code';
-
 const authService = new AuthService();
 const { registerUser, loginUser } = authService;
 class AuthController {
@@ -12,10 +11,10 @@ class AuthController {
   ): Promise<void> {
     try {
       const { email, password, name, role, project } = req.body;
-      await registerUser(email, password, name, role, project);
+      const user = await registerUser(email, password, name, role, project);
       res
         .status(StatusCode.CREATED)
-        .json({ message: 'User created successfully' });
+        .json({ message: 'User created successfully', user });
     } catch (error) {
       next(error);
     }

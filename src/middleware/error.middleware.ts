@@ -1,14 +1,8 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { GlobalException } from '../exceptions/global.exception';
-import {
-  BadRequestException,
-  InternalServerErrorException,
-  NotFoundException,
-  UnauthorizedException,
-  ForbiddenException,
-} from '../exceptions/custom.exception';
 import logger from '../utils/logger';
 import { prismaError } from 'prisma-better-errors';
+import { InternalServerErrorException } from '../exceptions/custom.exception';
 export const errorMiddleware = (
   err: Error,
   req: Request,

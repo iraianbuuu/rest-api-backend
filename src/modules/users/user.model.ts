@@ -5,3 +5,8 @@ export interface UserResponse {
   role: string;
   project: string;
 }
+
+export interface UserPayload {
+  id: string;
+  name: string;
+}

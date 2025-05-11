@@ -8,7 +8,7 @@ class UserService {
         where: { id },
       });
       return user;
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleError(error);
     }
   }
@@ -31,7 +31,7 @@ class UserService {
         },
       });
       return user;
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleError(error);
     }
   }
@@ -42,7 +42,16 @@ class UserService {
         where: { id },
       });
       return user;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      handleError(error);
+    }
+  }
+
+  async getUsers() {
+    try {
+      const users = await prisma.user.findMany();
+      return users;
+    } catch (error: unknown) {
       handleError(error);
     }
   }

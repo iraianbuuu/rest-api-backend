@@ -4,7 +4,7 @@ import { StatusCode } from '../../utils/status-code';
 import { UserResponse } from './user.model';
 import { NotFoundException } from '../../exceptions/custom.exception';
 const userService = new UserService();
-const { getUsersById, updateUserById, deleteUserById } = userService;
+const { getUsersById, updateUserById, deleteUserById, getUsers } = userService;
 
 class UserController {
   async getUserById(req: Request, res: Response, next: NextFunction) {
@@ -55,6 +55,15 @@ class UserController {
       res
         .status(StatusCode.OK)
         .json({ message: 'Account deleted successfully', user });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const users = await getUsers();
+      res.status(StatusCode.OK).json(users);
     } catch (error) {
       next(error);
     }
