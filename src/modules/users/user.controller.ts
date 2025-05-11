@@ -1,15 +1,27 @@
 import { NextFunction, Request, Response } from 'express';
 import UserService from './user.service';
 import { StatusCode } from '../../utils/status-code';
+import { UserResponse } from './user.model';
+import { NotFoundException } from '../../exceptions/custom.exception';
 const userService = new UserService();
 const { getUsersById, updateUserById, deleteUserById } = userService;
 
 class UserController {
-  async getUsersById(req: Request, res: Response, next: NextFunction) {
+  async getUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const user = await getUsersById(id);
-      res.status(StatusCode.OK).json(user);
+      if (!user) {
+        throw new NotFoundException(`Account with id: ${id} not found`);
+      }
+      const response: UserResponse = {
+        id: user?.id,
+        name: user?.name,
+        email: user?.email,
+        role: user?.role,
+        project: user?.project,
+      };
+      res.status(StatusCode.OK).json(response);
     } catch (error) {
       next(error);
     }
@@ -19,9 +31,19 @@ class UserController {
       const { id } = req.params;
       const { name, email, role, project } = req.body;
       const user = await updateUserById(id, name, email, role, project);
+      if (!user) {
+        throw new NotFoundException(`Account with id: ${id} not found`);
+      }
+      const response: UserResponse = {
+        id: user?.id,
+        name: user?.name,
+        email: user?.email,
+        role: user?.role,
+        project: user?.project,
+      };
       res
         .status(StatusCode.OK)
-        .json({ message: 'User updated successfully', user });
+        .json({ message: 'Account updated successfully', response });
     } catch (error) {
       next(error);
     }
@@ -32,7 +54,7 @@ class UserController {
       const user = await deleteUserById(id);
       res
         .status(StatusCode.OK)
-        .json({ message: 'User deleted successfully', user });
+        .json({ message: 'Account deleted successfully', user });
     } catch (error) {
       next(error);
     }

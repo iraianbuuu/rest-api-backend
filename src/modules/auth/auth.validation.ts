@@ -12,11 +12,10 @@ export const registerUserSchema = z.object({
     required_error: 'Project is required',
     invalid_type_error: 'Project must be a string',
   }),
-  role: z
-    .enum(Roles, {
-      invalid_type_error: `Role must be one of the following: ${Roles.join(', ')}`,
-    })
-    .optional(),
+  role: z.enum(Roles, {
+    invalid_type_error: `Role must be one of the following: ${Roles.join(', ')}`,
+    required_error: 'Role is required',
+  }),
   email: z.string().email({
     message: 'Invalid email',
   }),

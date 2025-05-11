@@ -1,18 +1,15 @@
 import prisma from '../../config/prisma';
-import { prismaError } from 'prisma-better-errors';
 import { Role } from '@prisma/client';
+import { handleError } from '../../utils';
 class UserService {
   async getUsersById(id: string) {
     try {
       const user = await prisma.user.findUnique({
         where: { id },
       });
-      if (!user) {
-        throw new Error('User not found');
-      }
       return user;
     } catch (error: any) {
-      throw new prismaError(error);
+      handleError(error);
     }
   }
 
@@ -33,12 +30,9 @@ class UserService {
           project: project,
         },
       });
-      if (!user) {
-        throw new Error('User not found');
-      }
       return user;
     } catch (error: any) {
-      throw new prismaError(error);
+      handleError(error);
     }
   }
 
@@ -47,12 +41,9 @@ class UserService {
       const user = await prisma.user.delete({
         where: { id },
       });
-      if (!user) {
-        throw new Error('User not found');
-      }
       return user;
     } catch (error: any) {
-      throw new prismaError(error);
+      handleError(error);
     }
   }
 }
