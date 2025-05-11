@@ -36,11 +36,14 @@
     "@prisma/client": "^6.7.0",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/morgan": "^1.9.9",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
     "prisma-better-errors": "^1.0.4",
+    "winston": "^3.17.0",
     "zod": "^3.24.4"
   },
   "lint-staged": {
