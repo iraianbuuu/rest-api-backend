@@ -9,17 +9,15 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction,
 ) => {
+  logger.error(err.message);
   if (err instanceof GlobalException) {
-    logger.error(err.message);
     return GlobalException.handle(err, res);
   } else if (err instanceof prismaError) {
-    logger.error(err.message);
     res.status(err.statusCode).json({
       message: err.message,
       metaData: err.metaData,
     });
   } else {
-    logger.error({ message: err.message });
     const internalError = new InternalServerErrorException(err.message);
     return GlobalException.handle(internalError, res);
   }

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { UnauthorizedException } from '../exceptions/custom.exception';
+import { ForbiddenException } from '../exceptions/custom.exception';
 import { Role } from '@prisma/client';
 
 export const roleMiddleware = async (
@@ -11,8 +11,8 @@ export const roleMiddleware = async (
     const user = req.user;
     console.log(user);
     if (!user || user.role !== Role.ADMIN) {
-      throw new UnauthorizedException(
-        'Unauthorized access. Only admins can access this route.',
+      throw new ForbiddenException(
+        'Forbidden. Only admins can access this route.',
       );
     }
     next();

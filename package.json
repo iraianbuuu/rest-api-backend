@@ -21,6 +21,8 @@
     "@eslint/js": "^9.26.0",
     "@types/express": "^5.0.1",
     "@types/node": "^22.15.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.2",
     "globals": "^16.0.0",
@@ -43,6 +45,8 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "prisma-better-errors": "^1.0.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "winston": "^3.17.0",
     "zod": "^3.24.4"
   },
