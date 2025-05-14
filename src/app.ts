@@ -5,6 +5,7 @@ import userRouter from './modules/users/user.routes';
 import logMiddleware from './middleware/log.middleware';
 import { swagger } from './config/swagger';
 import swaggerDocumentation from './config/swagger';
+import ticketRouter from './modules/tickets/ticket.routes';
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(logMiddleware);
 app.use('/api/v1/api-docs', swagger.serve, swagger.setup(swaggerDocumentation));
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/tickets', ticketRouter);
 app.use(errorMiddleware);
 
 export default app;
