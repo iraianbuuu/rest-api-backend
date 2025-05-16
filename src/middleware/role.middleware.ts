@@ -9,10 +9,9 @@ export const roleMiddleware = async (
 ) => {
   try {
     const user = req.user;
-    console.log(user);
-    if (!user || user.role !== Role.ADMIN) {
+    if (!user || (user.role !== Role.ADMIN && user.role !== Role.TECH_LEAD)) {
       throw new ForbiddenException(
-        'Forbidden. Only admins can access this route.',
+        'Forbidden. Only admins or tech leads can access this route.',
       );
     }
     next();

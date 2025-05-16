@@ -53,9 +53,14 @@ class UserService {
     }
   };
 
-  getUsers = async () => {
+  getUsers = async (role: Role, id: string) => {
     try {
-      return await prisma.user.findMany();
+      const user = await this.findUserById(id);
+      const project = user.project;
+      if (role === Role.ADMIN) {
+        return await prisma.user.findMany();
+      }
+      return await prisma.user.findMany({ where: { project, role: { not: Role.ADMIN } }});
     } catch (error: unknown) {
       handleError(error);
     }

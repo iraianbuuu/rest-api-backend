@@ -3,6 +3,7 @@ import UserService from './user.service';
 import { StatusCode } from '../../utils/status-code';
 import { UserResponse } from './user.model';
 import { NotFoundException } from '../../exceptions/custom.exception';
+import { Role } from '@prisma/client';
 const userService = new UserService();
 const { getUsersById, updateUserById, deleteUserById, getUsers } = userService;
 
@@ -62,8 +63,12 @@ class UserController {
 
   async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const users = await getUsers();
-      res.status(StatusCode.OK).json(users);
+      const { role, id } = req.user;
+      const users = await getUsers(role as Role, id);
+      res.status(StatusCode.OK).json({
+        message: 'Users fetched successfully',
+        data: users,
+      });
     } catch (error) {
       next(error);
     }
