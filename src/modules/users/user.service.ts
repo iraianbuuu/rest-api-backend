@@ -1,10 +1,10 @@
 import prisma from '../../config/prisma';
-import { Role } from '@prisma/client';
+import { Project, Role } from '@prisma/client';
 import { handleError } from '../../utils';
 import { NotFoundException } from '../../exceptions/custom.exception';
 
 class UserService {
-  private findUserById = async (id: string) => {
+  findUserById = async (id: string) => {
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) {
       throw new NotFoundException(`Account with id: ${id} not found`);
@@ -35,7 +35,7 @@ class UserService {
           name,
           email,
           role: role as Role,
-          project,
+          project: project as Project,
         },
       });
       return updatedUser;

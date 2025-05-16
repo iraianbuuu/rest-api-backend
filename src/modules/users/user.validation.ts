@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Roles } from '../shared/roles';
+import { ROLES } from '../shared';
 
 export const updateUserValidation = z.object({
   name: z
@@ -18,8 +18,8 @@ export const updateUserValidation = z.object({
     .email({
       message: 'Invalid email',
     }),
-  role: z.enum(Roles, {
-    message: `Role must be one of the following: ${Roles.join(', ')}`,
+  role: z.enum(ROLES, {
+    message: `Role must be one of the following: ${ROLES.join(', ')}`,
   }),
   project: z
     .string({

@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client';
+import { Project, Role } from '@prisma/client';
 import prisma from '../../config/prisma';
 import jwt from 'jsonwebtoken';
 import { config } from '../../config';
@@ -20,7 +20,7 @@ class AuthService {
           email,
           password,
           role: role as Role,
-          project,
+          project: project as Project,
         },
       });
     } catch (error: unknown) {

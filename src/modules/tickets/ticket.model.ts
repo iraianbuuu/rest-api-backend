@@ -1,15 +1,12 @@
-import { Status, Priority ,  WorkType, Project } from "@prisma/client";
+import { Status, Priority, WorkType, Project } from '@prisma/client';
 
 export interface TicketRequest {
-    title: string;  
-    workType: WorkType;
-    description: string;
-    project: Project;
-    assigneeId: string;
-    status: Status;
-    priority: Priority;
-    createdBy: string;
-    createdById: string;
-    assignedTo: string;
-    assignedToId: string;
+  title: string;
+  workType: WorkType;
+  description: string;
+  project: Project;
+  status: Status;
+  priority: Priority;
+  createdById: string;
+  assignedToId: string;
 }

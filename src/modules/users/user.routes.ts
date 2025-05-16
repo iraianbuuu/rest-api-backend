@@ -11,7 +11,7 @@ const { getUserById, updateUserById, deleteUserById, getUsers } =
   userController;
 
 userRouter.get('/:id', getUserById);
-userRouter.put('/:id', validate(updateUserValidation), updateUserById);
+userRouter.put('/:id', validate(updateUserValidation, 'body'), updateUserById);
 userRouter.delete('/:id', roleMiddleware, deleteUserById);
 userRouter.get('/', roleMiddleware, getUsers);
 

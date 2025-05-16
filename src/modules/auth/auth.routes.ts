@@ -8,8 +8,12 @@ const authController = new AuthController();
 
 const { registerUser, loginUser } = authController;
 
-authRouter.post('/register', validate(registerUserSchema), registerUser);
+authRouter.post(
+  '/register',
+  validate(registerUserSchema, 'body'),
+  registerUser,
+);
 
-authRouter.post('/login', validate(loginUserSchema), loginUser);
+authRouter.post('/login', validate(loginUserSchema, 'body'), loginUser);
 
 export default authRouter;

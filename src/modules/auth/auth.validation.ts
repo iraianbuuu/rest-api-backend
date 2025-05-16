@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Roles } from '../shared/roles';
+import { ROLES } from '../shared';
 
 export const registerUserSchema = z.object({
   name: z
@@ -12,8 +12,8 @@ export const registerUserSchema = z.object({
     required_error: 'Project is required',
     invalid_type_error: 'Project must be a string',
   }),
-  role: z.enum(Roles, {
-    invalid_type_error: `Role must be one of the following: ${Roles.join(', ')}`,
+  role: z.enum(ROLES, {
+    invalid_type_error: `Role must be one of the following: ${ROLES.join(', ')}`,
     required_error: 'Role is required',
   }),
   email: z.string().email({
