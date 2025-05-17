@@ -6,15 +6,25 @@ import logMiddleware from './middleware/log.middleware';
 import { swagger } from './config/swagger';
 import swaggerDocumentation from './config/swagger';
 import ticketRouter from './modules/tickets/ticket.routes';
-
+import { getMetrics } from './utils/metrics';
+import {
+  METRICS_URL,
+  AUTH_URL,
+  USERS_URL,
+  TICKETS_URL,
+  DOCS_URL,
+} from './utils/api';
+import { metricsMiddleware } from './middleware/metrics.middleware';
 const app = express();
 
 app.use(express.json());
+app.use(metricsMiddleware);
 app.use(logMiddleware);
-app.use('/api/v1/api-docs', swagger.serve, swagger.setup(swaggerDocumentation));
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/tickets', ticketRouter);
+app.use(METRICS_URL, getMetrics);
+app.use(DOCS_URL, swagger.serve, swagger.setup(swaggerDocumentation));
+app.use(AUTH_URL, authRouter);
+app.use(USERS_URL, userRouter);
+app.use(TICKETS_URL, ticketRouter);
 app.use(errorMiddleware);
 
 export default app;

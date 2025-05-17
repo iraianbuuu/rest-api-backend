@@ -12,10 +12,44 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=postgres
       - POSTGRES_DB=ziraa
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus-server
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+    networks:
+      - ziraa-network
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana-server
+    ports:
+      - 3000:3000
+    networks:
+      - ziraa-network
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    volumes:
+      - grafana_data:/var/lib/grafana
+  loki:
+    image: grafana/loki
+    container_name: loki-server
+    ports:
+      - 3100:3100
+    networks:
+      - ziraa-network
+    environment:
+      - LOKI_USERNAME=admin
+      - LOKI_PASSWORD=password
+    volumes:
+      - ziraa_data:/var/lib/loki
 
 volumes:
   ziraa_data:
-
+  grafana_data:
 networks:
   ziraa-network:
     driver: bridge
