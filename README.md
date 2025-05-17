@@ -67,11 +67,31 @@ Authorization: Bearer <token>
 # Delete User
 DELETE /api/v1/users/:id
 Authorization: Bearer <token>
+
+# Get all Users
+GET /api/v1/users/:id
+Authorization: Bearer <token>
+Role : ADMIN (All) , TECH_LEAD (Project)
 ```
 
-## 🛠️ Development
+### Tickets
 
-### Available Scripts
+```http
+# Create Ticket
+POST /api/v1/tickets
+Authorization : Bearer <token>
+
+# Get Ticket
+GET /api/v1/tickets/:id
+Authorization: Bearer <token>
+
+# Get all Tickets
+GET /api/v1/tickets/:id
+Authorization: Bearer <token>
+Role : ADMIN (All) , TECH_LEAD (Project)
+```
+
+### 🛠️ Available Scripts
 
 ```bash
 # Development
@@ -102,9 +122,12 @@ npm run format      # Run Prettier
 │   └── 📄 schema.prisma / Database schema
 ├── 📄 .env
 ├── 📄 .env.example
-├── 📄 .eslintrc.json
 ├── 📄 .gitignore
+├── 📄 .prettierrc
 ├── 📄 docker-compose.yaml
+├── 📄 eslint.config.mjs
+├── 📄 openapi.json
+├── 📄 package-lock.json
 ├── 📄 package.json
 ├── 📄 README.md
 └── 📄 tsconfig.json
@@ -149,4 +172,3 @@ For support, email [iraianbu011@gmail.com](mailto:your-email@example.com) or ope
 ---
 
 Made with ❤️ by [Iraianbu](https://github.com/iraianbuuu)
-

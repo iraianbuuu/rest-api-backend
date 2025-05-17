@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-     "url" : "http://localhost:3000"
+      "url": "http://localhost:3000"
     }
   ],
   "components": {
@@ -38,19 +38,10 @@
           },
           "role": {
             "type": "string",
-            "enum": [
-              "ADMIN",
-              "DEVELOPER",
-              "TECH_LEAD"
-            ]
+            "enum": ["ADMIN", "DEVELOPER", "TECH_LEAD"]
           }
         },
-        "required": [
-          "name",
-          "email",
-          "project",
-          "role"
-        ]
+        "required": ["name", "email", "project", "role"]
       },
       "RegisterUserRequest": {
         "type": "object",
@@ -71,20 +62,10 @@
           },
           "role": {
             "type": "string",
-            "enum": [
-              "ADMIN",
-              "DEVELOPER",
-              "TECH_LEAD"
-            ]
+            "enum": ["ADMIN", "DEVELOPER", "TECH_LEAD"]
           }
         },
-        "required": [
-          "name",
-          "email",
-          "password",
-          "project",
-          "role"
-        ]
+        "required": ["name", "email", "password", "project", "role"]
       },
       "LoginRequest": {
         "type": "object",
@@ -98,10 +79,7 @@
             "format": "password"
           }
         },
-        "required": [
-          "email",
-          "password"
-        ]
+        "required": ["email", "password"]
       },
       "LoginResponse": {
         "type": "object",
@@ -126,13 +104,123 @@
           },
           "role": {
             "type": "string",
-            "enum": [
-              "ADMIN",
-              "DEVELOPER",
-              "TECH_LEAD"
-            ]
+            "enum": ["ADMIN", "DEVELOPER", "TECH_LEAD"]
           }
         }
+      },
+      "Ticket": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "workType": {
+            "type": "string",
+            "enum": ["TASK", "STORY", "BUG", "EPIC"]
+          },
+          "description": {
+            "type": "string"
+          },
+          "project": {
+            "type": "string",
+            "enum": ["PROJECT_A", "PROJECT_B", "PROJECT_C"]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "TODO",
+              "IN_PROGRESS",
+              "PEER_REVIEW",
+              "READY_FOR_QA",
+              "DONE"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["LOW", "LOWEST", "MEDIUM", "HIGH", "HIGHEST"]
+          },
+          "createdById": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "assignedToId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "title",
+          "workType",
+          "description",
+          "project",
+          "status",
+          "priority",
+          "createdById",
+          "assignedToId"
+        ]
+      },
+      "CreateTicketRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "workType": {
+            "type": "string",
+            "enum": ["TASK", "STORY", "BUG", "EPIC"]
+          },
+          "description": {
+            "type": "string"
+          },
+          "project": {
+            "type": "string",
+            "enum": ["PROJECT_A", "PROJECT_B", "PROJECT_C"]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "TODO",
+              "IN_PROGRESS",
+              "PEER_REVIEW",
+              "READY_FOR_QA",
+              "DONE"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["LOW", "LOWEST", "MEDIUM", "HIGH", "HIGHEST"]
+          },
+          "createdById": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "assignedToId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "title",
+          "workType",
+          "description",
+          "project",
+          "status",
+          "priority",
+          "createdById",
+          "assignedToId"
+        ]
       }
     }
   },
@@ -440,6 +528,171 @@
           },
           "404": {
             "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tickets": {
+      "post": {
+        "summary": "Create a new ticket",
+        "operationId": "createTicket",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTicketRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ticket created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Ticket created successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Ticket"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tickets/{ticketId}": {
+      "parameters": [
+        {
+          "name": "ticketId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get ticket by ID",
+        "operationId": "getTicketById",
+        "responses": {
+          "200": {
+            "description": "Ticket fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Ticket fetched successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Ticket"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ticket not found",
             "content": {
               "application/json": {
                 "schema": {
