@@ -20,7 +20,6 @@ export const authMiddleware = async (
     req.user = decoded as UserPayload;
     next();
   } catch (error: unknown) {
-    res.status(StatusCode.BAD_REQUEST).json({ message: 'Invalid token' });
-    next(error);
+    return res.status(StatusCode.BAD_REQUEST).json({ message: 'Invalid token' });
   }
 };
