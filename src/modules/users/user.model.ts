@@ -11,3 +11,14 @@ export interface UserPayload {
   name: string;
   role: string;
 }
+
+interface IQueryParams {
+  page?: string;
+  perPage?: string;
+}
+
+export interface IUserQueryParams extends IQueryParams {
+  project?: string;
+  role?: string;
+  sort?: { [key in 'name' | 'project']?: 'asc' | 'desc' };
+}

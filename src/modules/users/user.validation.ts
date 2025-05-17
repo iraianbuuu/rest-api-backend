@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ROLES } from '../shared';
+import { ROLES, PROJECTS, SORT_BY_REGEX } from '../shared';
 
 export const updateUserValidation = z.object({
   name: z
@@ -21,12 +21,28 @@ export const updateUserValidation = z.object({
   role: z.enum(ROLES, {
     message: `Role must be one of the following: ${ROLES.join(', ')}`,
   }),
-  project: z
-    .string({
-      required_error: 'Project is required',
-      invalid_type_error: 'Project must be a string',
+  project: z.enum(PROJECTS, {
+    message: `Project must be one of the following: ${PROJECTS.join(', ')}`,
+  }),
+});
+
+export const getUsersValidation = z.object({
+  page: z.string().optional(),
+  perPage: z.string().optional(),
+  role: z
+    .enum(ROLES, {
+      message: `Role must be one of the following: ${ROLES.join(', ')}`,
     })
-    .min(5, {
-      message: 'Project must be at least 5 character long',
-    }),
+    .optional(),
+  project: z
+    .enum(PROJECTS, {
+      message: `Project must be one of the following: ${PROJECTS.join(', ')}`,
+    })
+    .optional(),
+  sort: z
+    .string()
+    .regex(SORT_BY_REGEX, {
+      message: `Sort must be in the format 'name:asc', 'name:desc', 'project:asc', or 'project:desc'`,
+    })
+    .optional(),
 });

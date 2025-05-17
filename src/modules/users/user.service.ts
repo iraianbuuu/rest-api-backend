@@ -1,69 +1,92 @@
-import prisma from '../../config/prisma';
 import { Project, Role } from '@prisma/client';
-import { handleError } from '../../utils';
-import { NotFoundException } from '../../exceptions/custom.exception';
+import UserRepository from './user.repository';
+import {
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '../../exceptions/custom.exception';
+import { IUserQueryParams } from './user.model';
+
+const userRepository = new UserRepository();
 
 class UserService {
   findUserById = async (id: string) => {
-    const user = await prisma.user.findUnique({ where: { id } });
+    const user = await userRepository.findUserById(id);
     if (!user) {
       throw new NotFoundException(`Account with id: ${id} not found`);
     }
     return user;
   };
 
-  getUsersById = async (id: string) => {
-    try {
-      return await this.findUserById(id);
-    } catch (error: unknown) {
-      handleError(error);
-    }
-  };
-
   updateUserById = async (
     id: string,
     name: string,
     email: string,
-    role: string,
-    project: string,
+    role: Role,
+    project: Project,
   ) => {
-    try {
-      await this.findUserById(id);
-      const updatedUser = await prisma.user.update({
-        where: { id },
-        data: {
-          name,
-          email,
-          role: role as Role,
-          project: project as Project,
-        },
-      });
-      return updatedUser;
-    } catch (error: unknown) {
-      handleError(error);
+    const user = await this.findUserById(id);
+
+    // Role and project constraints
+    if (
+      user.role === Role.ADMIN ||
+      user.role === Role.TECH_LEAD ||
+      role === Role.ADMIN ||
+      role === Role.TECH_LEAD
+    ) {
+      throw new ForbiddenException(
+        'Admin or Tech Lead cannot be updated by normal user',
+      );
     }
+
+    if (user.project !== project) {
+      throw new BadRequestException(
+        "Project is not the same as the user's project",
+      );
+    }
+
+    return await userRepository.updateUserById(id, name, email, role, project);
   };
 
-  deleteUserById = async (id: string) => {
-    try {
-      await this.findUserById(id);
-      return await prisma.user.delete({ where: { id } });
-    } catch (error: unknown) {
-      handleError(error);
+  deleteUserById = async (id: string, role: Role) => {
+    const user = await this.findUserById(id);
+
+    if (role === 'TECH_LEAD' && user.role === 'ADMIN') {
+      throw new BadRequestException(
+        'Tech Lead cannot delete the Admin account',
+      );
     }
+
+    return await userRepository.deleteUserById(id);
   };
 
-  getUsers = async (role: Role, id: string) => {
-    try {
-      const user = await this.findUserById(id);
-      const project = user.project;
-      if (role === Role.ADMIN) {
-        return await prisma.user.findMany();
+  getUsers = async (
+    role: Role,
+    id: string,
+    queryParams: IUserQueryParams = {},
+    limit: number,
+    offset: number,
+  ) => {
+    const techLead = await this.findUserById(id);
+    if (!techLead) {
+      throw new NotFoundException(`Account with id: ${id} not found`);
+    }
+    // If the user is a tech lead
+    if (role === 'TECH_LEAD') {
+      const project = techLead.project;
+      if (
+        (queryParams.project && queryParams.project !== project) ||
+        (queryParams.role && queryParams.role === 'ADMIN')
+      ) {
+        throw new BadRequestException('User is not authorized to access');
       }
-      return await prisma.user.findMany({ where: { project, role: { not: Role.ADMIN } }});
-    } catch (error: unknown) {
-      handleError(error);
+      if (!queryParams.role || !queryParams.project) {
+        queryParams.role = role;
+        queryParams.project = project;
+      }
     }
+
+    return await userRepository.getUsers(queryParams, limit, offset);
   };
 }
 

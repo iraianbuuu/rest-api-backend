@@ -7,6 +7,7 @@ interface Config {
   nodeEnv: string;
   secretKey: string;
   baseUrl: string;
+  defaultPageSise: number;
 }
 
 export const config: Config = {
@@ -14,4 +15,5 @@ export const config: Config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   secretKey: process.env.SECRET_KEY as string,
   baseUrl: process.env.BASE_URL as string,
+  defaultPageSise: parseInt(process.env.DEFAULT_PAGE_SIZE || '5'),
 };

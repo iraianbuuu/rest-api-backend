@@ -31,16 +31,16 @@ const consoleFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.colorize({ all: true }),
   winston.format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`
-  )
+    (info) => `${info.timestamp} ${info.level}: ${info.message}`,
+  ),
 );
 
 // File format without colors
 const fileFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`
-  )
+    (info) => `${info.timestamp} ${info.level}: ${info.message}`,
+  ),
 );
 
 // Loki format (structured JSON)
@@ -52,20 +52,20 @@ const lokiFormat = winston.format.combine(
 const transports = [
   // Console transport with colors
   new winston.transports.Console({
-    format: consoleFormat
+    format: consoleFormat,
   }),
-  
+
   // File transports without colors
-  new winston.transports.File({ 
-    filename: 'logs/error.log', 
+  new winston.transports.File({
+    filename: 'logs/error.log',
     level: 'error',
-    format: fileFormat
+    format: fileFormat,
   }),
-  new winston.transports.File({ 
+  new winston.transports.File({
     filename: 'logs/app.log',
-    format: fileFormat
+    format: fileFormat,
   }),
-  
+
   // Loki transport with JSON format
   new LokiTransport({
     host: 'http://localhost:3100',

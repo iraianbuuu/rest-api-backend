@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { StatusCode } from '../utils/status-code';
 import { config } from '../config';
 import { UserPayload } from '../modules/users/user.model';
+import { UnauthorizedException } from '../exceptions/custom.exception';
 export const authMiddleware = async (
   req: Request,
   res: Response,
@@ -20,6 +21,6 @@ export const authMiddleware = async (
     req.user = decoded as UserPayload;
     next();
   } catch (error: unknown) {
-    return res.status(StatusCode.BAD_REQUEST).json({ message: 'Invalid token' });
+    next(new UnauthorizedException('Invalid token'));
   }
 };
