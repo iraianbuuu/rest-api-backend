@@ -15,9 +15,11 @@ import {
   DOCS_URL,
 } from './utils/api';
 import { metricsMiddleware } from './middleware/metrics.middleware';
+import rateLimiter from './middleware/rate-limit.middleware';
 const app = express();
 
 app.use(express.json());
+app.use(rateLimiter);
 app.use(metricsMiddleware);
 app.use(logMiddleware);
 app.use(METRICS_URL, getMetrics);

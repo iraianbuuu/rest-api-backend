@@ -46,6 +46,13 @@ services:
       - LOKI_PASSWORD=password
     volumes:
       - ziraa_data:/var/lib/loki
+  redis:
+    image: redis:alpine
+    container_name: redis-server
+    ports:
+      - 6379:6379
+    networks:
+      - ziraa-network
 
 volumes:
   ziraa_data:

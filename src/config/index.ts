@@ -8,6 +8,8 @@ interface Config {
   secretKey: string;
   baseUrl: string;
   defaultPageSise: number;
+  redisHost: string;
+  redisPort: number;
 }
 
 export const config: Config = {
@@ -16,4 +18,6 @@ export const config: Config = {
   secretKey: process.env.SECRET_KEY as string,
   baseUrl: process.env.BASE_URL as string,
   defaultPageSise: parseInt(process.env.DEFAULT_PAGE_SIZE || '5'),
+  redisHost: process.env.REDIS_HOST as string,
+  redisPort: parseInt(process.env.REDIS_PORT || '6379'),
 };
