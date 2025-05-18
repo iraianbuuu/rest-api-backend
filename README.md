@@ -79,6 +79,7 @@ Query Parameters:
   - name: string (optional) - Filter users by name
   - role: string (optional) - Filter users by role
   - sort: string (optional) - Sort users by name or project
+```
 
 ### Tickets
 
@@ -94,11 +95,23 @@ Authorization: Bearer <token>
 # Get all Tickets (Admin/Tech Lead only)
 GET /api/v1/tickets
 Authorization: Bearer <token>
-Role: ADMIN (All) , TECH_LEAD (Project)
+Role: ADMIN (All), TECH_LEAD (Project)
+Query Parameters:
+  - page: integer (optional) - Page number for pagination
+  - perPage: integer (optional) - Number of tickets per page
+  - status: string (optional) - Filter tickets by status
+  - priority: string (optional) - Filter tickets by priority
+  - project: string (optional) - Filter tickets by project
+  - sort: string (optional) - Sort tickets by project (project:asc, project:desc)
+
+# Update Ticket
+PUT /api/v1/tickets/:id
+Authorization: Bearer <token>
 
 # Update Ticket Status
 PATCH /api/v1/tickets/:id/status
 Authorization: Bearer <token>
+Note: Status transitions follow specific workflow rules
 
 # Delete Ticket
 DELETE /api/v1/tickets/:id

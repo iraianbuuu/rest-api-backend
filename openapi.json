@@ -236,6 +236,43 @@
           "createdById",
           "assignedToId"
         ]
+      },
+      "UpdateTicketRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "workType": {
+            "type": "string",
+            "enum": ["TASK", "STORY", "BUG", "EPIC"]
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "TODO",
+              "IN_PROGRESS",
+              "PEER_REVIEW",
+              "READY_FOR_QA",
+              "DONE"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["LOW", "LOWEST", "MEDIUM", "HIGH", "HIGHEST"]
+          },
+          "createdById": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "assignedToId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
       }
     }
   },
@@ -651,7 +688,7 @@
             }
           },
           {
-            "name": "limit",
+            "name": "perPage",
             "in": "query",
             "description": "Number of tickets per page",
             "required": false,
@@ -689,16 +726,6 @@
             }
           },
           {
-            "name": "workType",
-            "in": "query",
-            "description": "Filter tickets by work type",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["TASK", "STORY", "BUG", "EPIC"]
-            }
-          },
-          {
             "name": "project",
             "in": "query",
             "description": "Filter tickets by project",
@@ -715,16 +742,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": [
-                "title:asc",
-                "status:asc",
-                "priority:asc",
-                "createdAt:asc",
-                "title:desc",
-                "status:desc",
-                "priority:desc",
-                "createdAt:desc"
-              ]
+              "enum": ["project:asc", "project:desc"]
             }
           }
         ],
@@ -746,22 +764,17 @@
                         "$ref": "#/components/schemas/Ticket"
                       }
                     },
-                    "pagination": {
-                      "type": "object",
-                      "properties": {
-                        "total": {
-                          "type": "integer"
-                        },
-                        "pages": {
-                          "type": "integer"
-                        },
-                        "page": {
-                          "type": "integer"
-                        },
-                        "limit": {
-                          "type": "integer"
-                        }
-                      }
+                    "page": {
+                      "type": "integer"
+                    },
+                    "perPage": {
+                      "type": "integer"
+                    },
+                    "total_pages": {
+                      "type": "integer"
+                    },
+                    "total_tickets": {
+                      "type": "integer"
                     }
                   }
                 }
@@ -785,6 +798,21 @@
           },
           "403": {
             "description": "Forbidden - You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No tickets found",
             "content": {
               "application/json": {
                 "schema": {
@@ -977,12 +1005,87 @@
             }
           }
         },
-        "delete": {
-          "summary": "Delete ticket",
-          "operationId": "deleteTicket",
+        "put": {
+          "summary": "Update ticket",
+          "operationId": "updateTicket",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "workType": {
+                      "type": "string",
+                      "enum": ["TASK", "STORY", "BUG", "EPIC"]
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "TODO",
+                        "IN_PROGRESS",
+                        "PEER_REVIEW",
+                        "READY_FOR_QA",
+                        "DONE"
+                      ]
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": ["LOW", "LOWEST", "MEDIUM", "HIGH", "HIGHEST"]
+                    },
+                    "createdById": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "assignedToId": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "responses": {
-            "204": {
-              "description": "Ticket deleted successfully"
+            "200": {
+              "description": "Ticket updated successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Ticket updated successfully"
+                      },
+                      "data": {
+                        "$ref": "#/components/schemas/Ticket"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
             },
             "401": {
               "description": "Unauthorized - Authentication required",
@@ -999,8 +1102,60 @@
                 }
               }
             },
-            "403": {
-              "description": "Forbidden - You do not have permission to delete this ticket",
+            "404": {
+              "description": "Ticket not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete ticket",
+          "operationId": "deleteTicket",
+          "responses": {
+            "200": {
+              "description": "Ticket deleted successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Ticket deleted successfully"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - Authentication required",
               "content": {
                 "application/json": {
                   "schema": {
@@ -1095,10 +1250,36 @@
                     "properties": {
                       "message": {
                         "type": "string",
-                        "example": "Ticket status updated successfully"
+                        "example": "Ticket status updated from TODO to IN_PROGRESS"
                       },
-                      "data": {
-                        "$ref": "#/components/schemas/Ticket"
+                      "links": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "rel": {
+                              "type": "string",
+                              "example": "next"
+                            },
+                            "method": {
+                              "type": "string",
+                              "example": "PATCH"
+                            },
+                            "href": {
+                              "type": "string",
+                              "example": "/api/v1/tickets/{ticketId}/status"
+                            },
+                            "body": {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "example": "PEER_REVIEW"
+                                }
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -1106,14 +1287,44 @@
               }
             },
             "400": {
-              "description": "Bad request",
+              "description": "Bad request - Invalid status transition",
               "content": {
                 "application/json": {
                   "schema": {
                     "type": "object",
                     "properties": {
-                      "error": {
-                        "type": "string"
+                      "message": {
+                        "type": "string",
+                        "example": "Invalid status transition"
+                      },
+                      "links": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "rel": {
+                              "type": "string",
+                              "example": "next"
+                            },
+                            "method": {
+                              "type": "string",
+                              "example": "PATCH"
+                            },
+                            "href": {
+                              "type": "string",
+                              "example": "/api/v1/tickets/{ticketId}/status"
+                            },
+                            "body": {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "example": "IN_PROGRESS"
+                                }
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -1122,21 +1333,6 @@
             },
             "401": {
               "description": "Unauthorized - Authentication required",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "error": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "403": {
-              "description": "Forbidden - You do not have permission to update this ticket",
               "content": {
                 "application/json": {
                   "schema": {
