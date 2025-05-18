@@ -15,4 +15,5 @@ export const TICKET_PRIORITY = [
   'HIGHEST',
 ] as const;
 export const WORK_TYPE = ['TASK', 'STORY', 'BUG', 'EPIC'] as const;
-export const SORT_BY_REGEX = /^(name|project):(asc|desc)$/;
+export const SORT_BY_USER_REGEX = /^(name|project):(asc|desc)$/;
+export const SORT_BY_TICKET_REGEX = /^(project):(asc|desc)$/;

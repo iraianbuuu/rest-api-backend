@@ -10,3 +10,15 @@ export interface TicketRequest {
   createdById: string;
   assignedToId: string;
 }
+
+export interface IQueryParams {
+  page?: string;
+  perPage?: string;
+}
+
+export interface ITicketQueryParams extends IQueryParams {
+  project?: string;
+  status?: string;
+  priority?: string;
+  sort?: { [key in 'project']?: 'asc' | 'desc' };
+}

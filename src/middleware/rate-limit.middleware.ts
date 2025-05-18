@@ -14,7 +14,7 @@ const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
 
     const ip = req.ip;
     const key = `rate-limit:${ip}`;
-    const limit = 5;
+    const limit = 50;
     const windowTime = 15 * 60;
 
     const requests = await client.incr(key);

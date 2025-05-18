@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ROLES, PROJECTS, SORT_BY_REGEX } from '../shared';
+import { ROLES, PROJECTS, SORT_BY_USER_REGEX } from '../shared';
 
 export const updateUserValidation = z.object({
   name: z
@@ -41,7 +41,7 @@ export const getUsersValidation = z.object({
     .optional(),
   sort: z
     .string()
-    .regex(SORT_BY_REGEX, {
+    .regex(SORT_BY_USER_REGEX, {
       message: `Sort must be in the format 'name:asc', 'name:desc', 'project:asc', or 'project:desc'`,
     })
     .optional(),

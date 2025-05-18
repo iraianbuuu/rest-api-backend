@@ -7,7 +7,7 @@ const client = new Redis({
 });
 
 client.on('error', (err) => {
-  console.error('Redis Client Error', err);
+  console.error('Redis', err.message);
 });
 
 export default client;

@@ -1,4 +1,5 @@
-import { TicketRequest } from './ticket.model';
+import { Role } from '@prisma/client';
+import { TicketRequest, ITicketQueryParams } from './ticket.model';
 import TicketRepository from './ticket.respository';
 import {
   BadRequestException,
@@ -42,5 +43,29 @@ export class TicketService {
   };
   getTicketById = async (id: string) => {
     return await ticketRepository.getTicketById(id);
+  };
+
+  getTickets = async (
+    role: Role,
+    id: string,
+    queryParams: ITicketQueryParams,
+    limit: number,
+    offset: number,
+  ) => {
+    const techLead = await userService.findUserById(id);
+    if (!techLead) {
+      throw new NotFoundException(`Account with id: ${id} not found`);
+    }
+    // If the user is a tech lead
+    if (role === 'TECH_LEAD') {
+      const project = techLead.project;
+      if (queryParams.project && queryParams.project !== project) {
+        throw new BadRequestException('User is not authorized to access');
+      }
+      if (!queryParams.status || !queryParams.project) {
+        queryParams.project = project;
+      }
+    }
+    return await ticketRepository.getTickets(queryParams, limit, offset);
   };
 }
