@@ -10,6 +10,7 @@ interface Config {
   defaultPageSise: number;
   redisHost: string;
   redisPort: number;
+  lokiHost: string;
 }
 
 export const config: Config = {
@@ -20,4 +21,5 @@ export const config: Config = {
   defaultPageSise: parseInt(process.env.DEFAULT_PAGE_SIZE || '5'),
   redisHost: process.env.REDIS_HOST as string,
   redisPort: parseInt(process.env.REDIS_PORT || '6379'),
+  lokiHost: process.env.LOKI_HOST as string,
 };

@@ -1,6 +1,6 @@
 import client from 'prom-client';
 import { Request, Response } from 'express';
-import { StatusCode } from './status-code';
+import { StatusCode } from '@utils/status-code';
 const register = new client.Registry();
 client.collectDefaultMetrics({ register });
 

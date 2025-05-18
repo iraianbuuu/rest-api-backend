@@ -1,6 +1,6 @@
 import morgan from 'morgan';
-import logger from '../utils/logger';
-import { config } from '../config';
+import logger from '@utils/logger';
+import { config } from '@config';
 
 const stream = {
   write: (message: string) => logger.http(message),

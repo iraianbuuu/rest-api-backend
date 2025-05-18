@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { TicketService } from './ticket.service';
-import { StatusCode } from '../../utils/status-code';
+import { StatusCode } from '@utils/status-code';
 import { TicketRequest } from './ticket.model';
 const ticketService = new TicketService();
 const { createTicket, getTicketById } = ticketService;

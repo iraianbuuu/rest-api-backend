@@ -1,5 +1,5 @@
 import Redis from 'ioredis';
-import { config } from './index';
+import { config } from '@config';
 
 const client = new Redis({
   host: config.redisHost,

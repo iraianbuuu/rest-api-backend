@@ -1,7 +1,7 @@
 import { Role, Project, Prisma } from '@prisma/client';
-import { NotFoundException } from '../../exceptions/custom.exception';
-import prisma from '../../config/prisma';
-import { handleError } from '../../utils';
+import { NotFoundException } from '@exceptions/custom.exception';
+import prisma from '@config/prisma';
+import { handleError } from '@utils/index';
 import { IUserQueryParams } from './user.model';
 class UserRepository {
   findUserById = async (id: string) => {

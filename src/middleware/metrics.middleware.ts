@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { httpRequestCounter, httpRequestDuration } from '../utils/metrics';
+import { httpRequestCounter, httpRequestDuration } from '@utils/metrics';
 
 export const metricsMiddleware = (
   req: Request,

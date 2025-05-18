@@ -17,6 +17,15 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "_moduleAliases": {
+  "@config": "dist/config",
+  "@controllers": "dist/controllers",
+  "@middleware": "dist/middleware",
+  "@modules": "dist/modules",
+  "@routes": "dist/routes",
+  "@utils": "dist/utils",
+  "@exceptions": "dist/exceptions"
+  },
   "devDependencies": {
     "@eslint/js": "^9.26.0",
     "@types/express": "^5.0.1",
@@ -28,6 +37,7 @@
     "globals": "^16.0.0",
     "husky": "^8.0.0",
     "lint-staged": "^15.5.2",
+    "module-alias": "^2.2.3",
     "prettier": "^3.5.3",
     "prisma": "^6.7.0",
     "ts-node-dev": "^2.0.0",

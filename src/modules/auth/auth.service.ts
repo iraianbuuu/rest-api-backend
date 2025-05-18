@@ -1,9 +1,9 @@
 import { Project, Role } from '@prisma/client';
-import prisma from '../../config/prisma';
+import prisma from '@config/prisma';
 import jwt from 'jsonwebtoken';
-import { config } from '../../config';
-import { handleError } from '../../utils';
-import { UnauthorizedException } from '../../exceptions/custom.exception';
+import { config } from '@config';
+import { handleError } from '@utils/index';
+import { UnauthorizedException } from '@exceptions/custom.exception';
 import { UserPayload } from '../users/user.model';
 class AuthService {
   async registerUser(

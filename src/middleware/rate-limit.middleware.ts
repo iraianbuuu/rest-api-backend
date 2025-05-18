@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import client from '../config/redis';
-import { StatusCode } from '../utils/status-code';
-import { METRICS_URL } from '../utils/api';
+import client from '@config/redis';
+import { StatusCode } from '@utils/status-code';
+import { METRICS_URL } from '@utils/api';
 
 const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
   try {

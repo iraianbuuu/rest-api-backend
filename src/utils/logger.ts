@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { config } from '../config';
+import { config } from '@config';
 import LokiTransport from 'winston-loki';
 
 const levels = {
@@ -68,7 +68,7 @@ const transports = [
 
   // Loki transport with JSON format
   new LokiTransport({
-    host: 'http://localhost:3100',
+    host: config.lokiHost,
     basicAuth: 'admin:password',
     format: lokiFormat,
     labels: { app: 'ziraa', env: config.nodeEnv },

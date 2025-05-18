@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { prismaError } from 'prisma-better-errors';
-import { BadRequestException } from '../exceptions/custom.exception';
-import { config } from '../config';
+import { BadRequestException } from '@exceptions/custom.exception';
+import { config } from '@config';
 
 export const handleError = (error: unknown) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {

@@ -1,21 +1,21 @@
 import express from 'express';
-import authRouter from './modules/auth/auth.routes';
-import { errorMiddleware } from './middleware/error.middleware';
-import userRouter from './modules/users/user.routes';
-import logMiddleware from './middleware/log.middleware';
-import { swagger } from './config/swagger';
-import swaggerDocumentation from './config/swagger';
-import ticketRouter from './modules/tickets/ticket.routes';
-import { getMetrics } from './utils/metrics';
+import authRouter from '@modules/auth/auth.routes';
+import { errorMiddleware } from '@middleware/error.middleware';
+import userRouter from '@modules/users/user.routes';
+import logMiddleware from '@middleware/log.middleware';
+import { swagger } from '@config/swagger';
+import swaggerDocumentation from '@config/swagger';
+import ticketRouter from '@modules/tickets/ticket.routes';
+import { getMetrics } from '@utils/metrics';
 import {
   METRICS_URL,
   AUTH_URL,
   USERS_URL,
   TICKETS_URL,
   DOCS_URL,
-} from './utils/api';
-import { metricsMiddleware } from './middleware/metrics.middleware';
-import rateLimiter from './middleware/rate-limit.middleware';
+} from '@utils/api';
+import { metricsMiddleware } from '@middleware/metrics.middleware';
+import rateLimiter from '@middleware/rate-limit.middleware';
 const app = express();
 
 app.use(express.json());

@@ -4,7 +4,7 @@ import {
   NotFoundException,
   ForbiddenException,
   BadRequestException,
-} from '../../exceptions/custom.exception';
+} from '@exceptions/custom.exception';
 import { IUserQueryParams } from './user.model';
 
 const userRepository = new UserRepository();

@@ -1,7 +1,7 @@
-import prisma from '../../config/prisma';
+import prisma from '@config/prisma';
 import { TicketRequest } from './ticket.model';
-import { handleError } from '../../utils';
-import { NotFoundException } from '../../exceptions/custom.exception';
+import { handleError } from '@utils/index';
+import { NotFoundException } from '@exceptions/custom.exception';
 class TicketRepository {
   createTicket = async (_ticket: TicketRequest) => {
     try {

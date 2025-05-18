@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { authMiddleware } from '../../middleware/auth.middleware';
-import { roleMiddleware } from '../../middleware/role.middleware';
-import { validate } from '../../middleware/validate.middleware';
+import { authMiddleware } from '@middleware/auth.middleware';
+import { roleMiddleware } from '@middleware/role.middleware';
+import { validate } from '@middleware/validate.middleware';
 import { createTicketSchema, getTicketByIdSchema } from './ticket.validation';
 import TicketController from './ticket.controller';
 const ticketController = new TicketController();

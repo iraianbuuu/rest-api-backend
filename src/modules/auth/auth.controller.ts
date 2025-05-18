@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import AuthService from './auth.service';
-import { StatusCode } from '../../utils/status-code';
+import { StatusCode } from '@utils/status-code';
 const authService = new AuthService();
 const { registerUser, loginUser } = authService;
 class AuthController {

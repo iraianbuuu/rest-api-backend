@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { StatusCode } from '../utils/status-code';
-import { config } from '../config';
-import { UserPayload } from '../modules/users/user.model';
-import { UnauthorizedException } from '../exceptions/custom.exception';
+import { StatusCode } from '@utils/status-code';
+import { config } from '@config';
+import { UserPayload } from '@modules/users/user.model';
+import { UnauthorizedException } from '@exceptions/custom.exception';
 export const authMiddleware = async (
   req: Request,
   res: Response,

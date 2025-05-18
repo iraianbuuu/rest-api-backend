@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { ForbiddenException } from '../exceptions/custom.exception';
+import { ForbiddenException } from '@exceptions/custom.exception';
 import { Role } from '@prisma/client';
 
 export const roleMiddleware = async (

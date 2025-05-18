@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import UserService from './user.service';
-import { StatusCode } from '../../utils/status-code';
+import { StatusCode } from '@utils/status-code';
 import { UserResponse, IUserQueryParams } from './user.model';
-import { NotFoundException } from '../../exceptions/custom.exception';
+import { NotFoundException } from '@exceptions/custom.exception';
 import { Role } from '@prisma/client';
 import { parseUserSortByQueryParams } from './user.utils';
-import { getPaginationationParameters } from '../../utils';
+import { getPaginationationParameters } from '@utils/index';
 const userService = new UserService();
 const { updateUserById, deleteUserById, findUserById, getUsers } = userService;
 

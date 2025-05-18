@@ -3,8 +3,8 @@ import TicketRepository from './ticket.respository';
 import {
   BadRequestException,
   NotFoundException,
-} from '../../exceptions/custom.exception';
-import UserService from '../users/user.service';
+} from '@exceptions/custom.exception';
+import UserService from '@modules/users/user.service';
 
 const ticketRepository = new TicketRepository();
 const userService = new UserService();
