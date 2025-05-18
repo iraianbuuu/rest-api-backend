@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "http://localhost:9876"
     }
   ],
   "components": {
@@ -39,9 +39,24 @@
           "role": {
             "type": "string",
             "enum": ["ADMIN", "DEVELOPER", "TECH_LEAD"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
-        "required": ["name", "email", "project", "role"]
+        "required": [
+          "name",
+          "email",
+          "project",
+          "role",
+          "createdAt",
+          "updatedAt"
+        ]
       },
       "RegisterUserRequest": {
         "type": "object",
@@ -342,7 +357,61 @@
             "bearerAuth": []
           }
         ],
-        "description": "Requires role: ADMIN",
+        "description": "Requires role: ADMIN, TECH_LEAD",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of users per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 5
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filter users by name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "Filter users by role",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["ADMIN", "DEVELOPER", "TECH_LEAD"]
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort users by name or project",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["name:asc", "project:asc", "name:desc", "project:desc"]
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of users",
@@ -560,6 +629,192 @@
       }
     },
     "/api/v1/tickets": {
+      "get": {
+        "summary": "Get all tickets",
+        "operationId": "getAllTickets",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Requires role: ADMIN or TECH_LEAD",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of tickets per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 5
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter tickets by status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "TODO",
+                "IN_PROGRESS",
+                "PEER_REVIEW",
+                "READY_FOR_QA",
+                "DONE"
+              ]
+            }
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "description": "Filter tickets by priority",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["LOW", "LOWEST", "MEDIUM", "HIGH", "HIGHEST"]
+            }
+          },
+          {
+            "name": "workType",
+            "in": "query",
+            "description": "Filter tickets by work type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["TASK", "STORY", "BUG", "EPIC"]
+            }
+          },
+          {
+            "name": "project",
+            "in": "query",
+            "description": "Filter tickets by project",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["PROJECT_A", "PROJECT_B", "PROJECT_C"]
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort tickets by field",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "title:asc",
+                "status:asc",
+                "priority:asc",
+                "createdAt:asc",
+                "title:desc",
+                "status:desc",
+                "priority:desc",
+                "createdAt:desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of tickets",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Tickets fetched successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Ticket"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer"
+                        },
+                        "pages": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "summary": "Create a new ticket",
         "operationId": "createTicket",
@@ -702,6 +957,245 @@
                       "type": "string"
                     }
                   }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete ticket",
+          "operationId": "deleteTicket",
+          "responses": {
+            "204": {
+              "description": "Ticket deleted successfully"
+            },
+            "401": {
+              "description": "Unauthorized - Authentication required",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden - You do not have permission to delete this ticket",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Ticket not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/tickets/{ticketId}/status": {
+        "parameters": [
+          {
+            "name": "ticketId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "patch": {
+          "summary": "Update ticket status",
+          "operationId": "updateTicketStatus",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "TODO",
+                        "IN_PROGRESS",
+                        "PEER_REVIEW",
+                        "READY_FOR_QA",
+                        "DONE"
+                      ]
+                    }
+                  },
+                  "required": ["status"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Ticket status updated successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Ticket status updated successfully"
+                      },
+                      "data": {
+                        "$ref": "#/components/schemas/Ticket"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - Authentication required",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden - You do not have permission to update this ticket",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Ticket not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/metrics": {
+      "get": {
+        "summary": "Get application metrics",
+        "operationId": "getMetrics",
+        "description": "Retrieves application metrics in Prometheus format",
+        "responses": {
+          "200": {
+            "description": "Metrics in Prometheus format",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
