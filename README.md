@@ -9,6 +9,7 @@ A robust Ticket Support System REST API crafted using Node.js and TypeScript, de
 - 🗄️ PostgreSQL Database with Prisma ORM
 - 📝 Request Validation with Zod
 - 📊 Structured Logging with Winston
+- 📈 Monitoring with Prometheus, Grafana, and Loki
 - 🐳 Docker Support
 - 🔍 ESLint & Prettier Configuration
 - 🧪 TypeScript Support
@@ -56,7 +57,7 @@ POST /api/v1/auth/login
 ### Users
 
 ```http
-# Get User
+# Get User by ID
 GET /api/v1/users/:id
 Authorization: Bearer <token>
 
@@ -68,27 +69,50 @@ Authorization: Bearer <token>
 DELETE /api/v1/users/:id
 Authorization: Bearer <token>
 
-# Get all Users
-GET /api/v1/users/:id
+# Get all Users (Admin/Tech Lead only)
+GET /api/v1/users
 Authorization: Bearer <token>
-Role : ADMIN (All) , TECH_LEAD (Project)
-```
+Role: ADMIN (All), TECH_LEAD (Project)
+Query Parameters:
+  - page: integer (optional) - Page number for pagination
+  - limit: integer (optional) - Number of users per page
+  - name: string (optional) - Filter users by name
+  - role: string (optional) - Filter users by role
+  - sort: string (optional) - Sort users by name or project
 
 ### Tickets
 
 ```http
 # Create Ticket
 POST /api/v1/tickets
-Authorization : Bearer <token>
+Authorization: Bearer <token>
 
-# Get Ticket
+# Get Ticket by ID
 GET /api/v1/tickets/:id
 Authorization: Bearer <token>
 
-# Get all Tickets
-GET /api/v1/tickets/:id
+# Get all Tickets (Admin/Tech Lead only)
+GET /api/v1/tickets
 Authorization: Bearer <token>
-Role : ADMIN (All) , TECH_LEAD (Project)
+Role: ADMIN (All) , TECH_LEAD (Project)
+
+# Update Ticket Status
+PATCH /api/v1/tickets/:id/status
+Authorization: Bearer <token>
+
+# Delete Ticket
+DELETE /api/v1/tickets/:id
+Authorization: Bearer <token>
+```
+
+### Metrics and Documentation
+
+```http
+# Application metrics endpoint (Prometheus)
+GET /api/v1/metrics
+
+# API Documentation (Swagger)
+GET /api/v1/api-docs
 ```
 
 ### 🛠️ Available Scripts
@@ -104,6 +128,10 @@ npm start            # Start production server
 # Code Quality
 npm run lint        # Run ESLint
 npm run format      # Run Prettier
+
+# Docker
+npm run docker:up   # Start Docker containers
+npm run docker:down # Stop Docker containers
 ```
 
 ### Project Structure
@@ -129,9 +157,22 @@ npm run format      # Run Prettier
 ├── 📄 openapi.json
 ├── 📄 package-lock.json
 ├── 📄 package.json
+├── 📄 prometheus.yml
 ├── 📄 README.md
 └── 📄 tsconfig.json
 ```
+
+## 🛠️ Monitoring Stack
+
+The application includes a comprehensive monitoring stack:
+
+- **Prometheus:** Collects and stores metrics from the application
+- **Grafana:** Visualizes metrics with customizable dashboards
+- **Loki:** Log aggregation system integrated with Grafana
+
+Access the monitoring tools after starting the Docker containers:
+- Grafana: http://localhost:3000 (admin/password)
+- Prometheus: http://localhost:9090
 
 ## 🤝 Contributing
 
@@ -162,6 +203,9 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - [Winston](https://github.com/winstonjs/winston) - Logging
 - [Zod](https://github.com/colinhacks/zod) - Schema validation
 - [Morgan](https://github.com/expressjs/morgan) - HTTP Logging
+- [Prometheus](https://prometheus.io/) - Metrics collection and alerting
+- [Grafana](https://grafana.com/) - Metrics visualization
+- [Loki](https://grafana.com/oss/loki/) - Log aggregation
 - [ESLint](https://eslint.org/) - Code linting
 - [Prettier](https://prettier.io/) - Code formatting
 
