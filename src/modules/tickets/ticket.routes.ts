@@ -4,12 +4,20 @@ import { roleMiddleware } from '@middleware/role.middleware';
 import { validate } from '@middleware/validate.middleware';
 import {
   createTicketSchema,
-  getTicketByIdSchema,
   getTicketsSchema,
+  ticketIdSchema,
+  updateTicketSchema,
 } from './ticket.validation';
 import TicketController from './ticket.controller';
 const ticketController = new TicketController();
-const { createTicket, getTicketById, getTickets } = ticketController;
+const {
+  createTicket,
+  getTicketById,
+  getTickets,
+  deleteTicket,
+  updateTicketStatus,
+  updateTicket,
+} = ticketController;
 
 const ticketRouter = Router();
 ticketRouter.use(authMiddleware);
@@ -21,13 +29,18 @@ ticketRouter.get(
   getTickets,
 );
 ticketRouter.post('/', validate(createTicketSchema, 'body'), createTicket);
-ticketRouter.get(
+ticketRouter.get('/:id', validate(ticketIdSchema, 'params'), getTicketById);
+ticketRouter.put(
   '/:id',
-  validate(getTicketByIdSchema, 'params'),
-  getTicketById,
+  validate(ticketIdSchema, 'params'),
+  validate(updateTicketSchema, 'body'),
+  updateTicket,
 );
-// ticketRouter.put('/:id');
-// ticketRouter.patch('/:id/status');
-// ticketRouter.delete('/:id');
+ticketRouter.patch(
+  '/:id/status',
+  validate(ticketIdSchema, 'params'),
+  updateTicketStatus,
+);
+ticketRouter.delete('/:id', validate(ticketIdSchema, 'params'), deleteTicket);
 
 export default ticketRouter;

@@ -51,6 +51,7 @@ model User {
   project   Project  @default(PROJECT_A)
   tickets   Ticket[] @relation("CreatedTickets")
   assigned  Ticket[] @relation("AssignedTickets")
+  deleted   Ticket[] @relation("DeletedTickets")
   comments  Comment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,6 +69,9 @@ model Ticket {
   createdById String
   assignedTo  User?     @relation("AssignedTickets", fields: [assignedToId], references: [id])
   assignedToId String?
+  isDeleted   Boolean   @default(false)
+  deletedBy   User?     @relation("DeletedTickets", fields: [deletedById], references: [id])
+  deletedById String?
   comments    Comment[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

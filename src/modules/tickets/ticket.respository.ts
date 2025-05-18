@@ -1,6 +1,10 @@
 import prisma from '@config/prisma';
 import { Priority, Prisma, Status } from '@prisma/client';
-import { ITicketQueryParams, TicketRequest } from './ticket.model';
+import {
+  ITicketQueryParams,
+  TicketRequest,
+  TicketUpdateRequest,
+} from './ticket.model';
 import { handleError } from '@utils/index';
 import { NotFoundException } from '@exceptions/custom.exception';
 import { Project } from '@prisma/client';
@@ -37,7 +41,7 @@ class TicketRepository {
   getTicketById = async (id: string) => {
     try {
       const ticket = await prisma.ticket.findUnique({
-        where: { id },
+        where: { id, isDeleted: false },
       });
       if (!ticket) {
         throw new NotFoundException(
@@ -55,13 +59,12 @@ class TicketRepository {
     limit: number,
     offset: number,
   ) => {
-    const { project, status, priority, sort } = queryParams;
-    console.log(project, status, priority, sort);
     try {
       const conditions: Prisma.TicketWhereInput = {
         project: queryParams.project as Project,
         status: queryParams.status as Status,
         priority: queryParams.priority as Priority,
+        isDeleted: false,
       };
 
       const tickets = await prisma.ticket.findMany({
@@ -76,6 +79,49 @@ class TicketRepository {
       handleError(error);
     }
   };
-}
 
+  deleteTicket = async (id: string, userId: string) => {
+    try {
+      const deletedTicket = await prisma.ticket.update({
+        where: { id },
+        data: { isDeleted: true, deletedById: userId },
+      });
+      if (!deletedTicket) {
+        throw new NotFoundException('Unable to delete ticket. No ticket found');
+      }
+      return deletedTicket;
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  updateTicketStatus = async (id: string, status: Status) => {
+    try {
+      const { status: updatedStatus } = await prisma.ticket.update({
+        where: { id },
+        data: { status },
+      });
+      if (!updatedStatus) {
+        throw new NotFoundException(
+          'Unable to update ticket status. No ticket found',
+        );
+      }
+      return updatedStatus;
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  updateTicket = async (id: string, ticket: TicketUpdateRequest) => {
+    try {
+      const updatedTicket = await prisma.ticket.update({
+        where: { id },
+        data: ticket,
+      });
+      return updatedTicket;
+    } catch (error) {
+      handleError(error);
+    }
+  };
+}
 export default TicketRepository;

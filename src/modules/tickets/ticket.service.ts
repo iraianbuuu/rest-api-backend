@@ -1,11 +1,16 @@
-import { Role } from '@prisma/client';
-import { TicketRequest, ITicketQueryParams } from './ticket.model';
+import { Role, Status } from '@prisma/client';
+import {
+  TicketRequest,
+  ITicketQueryParams,
+  TicketUpdateRequest,
+} from './ticket.model';
 import TicketRepository from './ticket.respository';
 import {
   BadRequestException,
   NotFoundException,
 } from '@exceptions/custom.exception';
 import UserService from '@modules/users/user.service';
+import { statusTransition } from './ticket.utils';
 
 const ticketRepository = new TicketRepository();
 const userService = new UserService();
@@ -67,5 +72,87 @@ export class TicketService {
       }
     }
     return await ticketRepository.getTickets(queryParams, limit, offset);
+  };
+
+  deleteTicket = async (id: string, userId: string) => {
+    await this.getTicketById(id);
+    return await ticketRepository.deleteTicket(id, userId);
+  };
+
+  updateTicketStatus = async (id: string, status: Status) => {
+    const ticket = await this.getTicketById(id);
+    if (!ticket) {
+      throw new NotFoundException('Ticket not found');
+    }
+
+    if (!statusTransition[ticket.status].includes(status)) {
+      throw new BadRequestException('Invalid status transition');
+    }
+
+    const updatedStatus = await ticketRepository.updateTicketStatus(id, status);
+    return {
+      updatedStatus,
+      nextStatuses: statusTransition[updatedStatus as Status],
+    };
+  };
+
+  updateTicket = async (id: string, ticket: TicketUpdateRequest) => {
+    const { status, createdById, assignedToId } = ticket;
+    const existingTicket = await this.getTicketById(id);
+    if (!existingTicket) {
+      throw new NotFoundException('Ticket not found');
+    }
+
+    // Update ticket status if provided
+    let updatedTicketStatus;
+    if (status) {
+      updatedTicketStatus = await this.updateTicketStatus(id, status);
+      if (updatedTicketStatus.nextStatuses.includes(status)) {
+        throw new BadRequestException('Invalid status transition');
+      }
+    }
+    // Validate user constraints
+    if (createdById || assignedToId) {
+      const [createdBy, assignedTo] = await Promise.all([
+        createdById
+          ? userService.findUserById(createdById as string)
+          : Promise.resolve(null),
+        assignedToId
+          ? userService.findUserById(assignedToId as string)
+          : Promise.resolve(null),
+      ]);
+
+      if ((createdById && !createdBy) || (assignedToId && !assignedTo)) {
+        throw new NotFoundException('One or both users not found');
+      }
+
+      if (createdBy && assignedTo && createdBy.project !== assignedTo.project) {
+        throw new BadRequestException('Users are not in the same project');
+      }
+
+      if (
+        (createdBy && createdBy.role === 'ADMIN') ||
+        (assignedTo && assignedTo.role === 'ADMIN')
+      ) {
+        throw new BadRequestException(
+          'User is not allowed to create ticket for admins',
+        );
+      }
+    }
+
+    const updatedTicketData = {
+      title: ticket.title ?? existingTicket.title,
+      workType: ticket.workType ?? existingTicket.workType,
+      description: ticket.description ?? existingTicket.description,
+      status: updatedTicketStatus?.updatedStatus ?? existingTicket.status,
+      priority: ticket.priority ?? existingTicket.priority,
+      createdById: ticket.createdById ?? existingTicket.createdById,
+      assignedToId: ticket.assignedToId ?? existingTicket.assignedToId,
+    };
+
+    return await ticketRepository.updateTicket(
+      id,
+      updatedTicketData as TicketUpdateRequest,
+    );
   };
 }

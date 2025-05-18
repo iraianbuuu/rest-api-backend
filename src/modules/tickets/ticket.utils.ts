@@ -13,3 +13,11 @@ export function parseTicketSortByQueryParams(sortByParams: string) {
   }
   return sortBy;
 }
+
+export const statusTransition = {
+  TODO: ['IN_PROGRESS'],
+  IN_PROGRESS: ['PEER_REVIEW', 'TODO'],
+  PEER_REVIEW: ['READY_FOR_QA', 'IN_PROGRESS'],
+  READY_FOR_QA: ['DONE', 'IN_PROGRESS'],
+  DONE: [''],
+};

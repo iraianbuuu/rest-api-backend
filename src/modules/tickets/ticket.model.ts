@@ -11,6 +11,16 @@ export interface TicketRequest {
   assignedToId: string;
 }
 
+export interface TicketUpdateRequest {
+  title?: string;
+  workType?: WorkType;
+  description?: string;
+  status?: Status;
+  priority?: Priority;
+  createdById?: string;
+  assignedToId?: string;
+}
+
 export interface IQueryParams {
   page?: string;
   perPage?: string;
