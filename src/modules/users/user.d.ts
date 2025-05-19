@@ -1,4 +1,4 @@
-import { UserPayload } from '../modules/users/user.model';
+import { UserPayload } from './user.model';
 
 declare global {
   namespace Express {

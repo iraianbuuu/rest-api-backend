@@ -12,10 +12,12 @@ import {
   AUTH_URL,
   USERS_URL,
   TICKETS_URL,
-  DOCS_URL,
+    DOCS_URL,
+  COMMENTS_URL,
 } from '@utils/api';
 import { metricsMiddleware } from '@middleware/metrics.middleware';
 import rateLimiter from '@middleware/rate-limit.middleware';
+import commentRouter from '@modules/comments/comment.routes';
 const app = express();
 
 app.use(express.json());
@@ -27,6 +29,7 @@ app.use(DOCS_URL, swagger.serve, swagger.setup(swaggerDocumentation));
 app.use(AUTH_URL, authRouter);
 app.use(USERS_URL, userRouter);
 app.use(TICKETS_URL, ticketRouter);
+app.use(COMMENTS_URL, commentRouter);
 app.use(errorMiddleware);
 
 export default app;

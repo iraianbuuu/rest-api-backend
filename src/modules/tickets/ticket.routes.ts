@@ -9,7 +9,10 @@ import {
   updateTicketSchema,
 } from './ticket.validation';
 import TicketController from './ticket.controller';
+import CommentController from '../comments/comment.controller';
+import { createCommentSchema } from '../comments/comment.validation';
 const ticketController = new TicketController();
+const commentController = new CommentController();
 const {
   createTicket,
   getTicketById,
@@ -19,9 +22,14 @@ const {
   updateTicket,
 } = ticketController;
 
+const {
+  addComment
+} = commentController;
+
 const ticketRouter = Router();
 ticketRouter.use(authMiddleware);
 
+// Tickets
 ticketRouter.get(
   '/',
   validate(getTicketsSchema, 'query'),
@@ -42,5 +50,8 @@ ticketRouter.patch(
   updateTicketStatus,
 );
 ticketRouter.delete('/:id', validate(ticketIdSchema, 'params'), deleteTicket);
+
+// Comments
+ticketRouter.post('/:id/comments', validate(ticketIdSchema, 'params'), validate(createCommentSchema, 'body'), addComment);
 
 export default ticketRouter;

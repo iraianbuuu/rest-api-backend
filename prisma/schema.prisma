@@ -48,10 +48,11 @@ model User {
   email     String   @unique
   password  String
   role      Role     @default(DEVELOPER)
-  project   Project  @default(PROJECT_A)
+  project   Project  
   tickets   Ticket[] @relation("CreatedTickets")
   assigned  Ticket[] @relation("AssignedTickets")
   deleted   Ticket[] @relation("DeletedTickets")
+  deletedComments Comment[] @relation("DeletedComments")
   comments  Comment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -61,7 +62,7 @@ model Ticket {
   id          String    @id @default(uuid())
   workType    WorkType  @default(TASK)
   title       String
-  project     Project   @default(PROJECT_A)
+  project     Project   
   description String
   status      Status    @default(TODO)
   priority    Priority  @default(MEDIUM)
@@ -86,4 +87,7 @@ model Comment {
   ticketId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+  deletedBy User?    @relation("DeletedComments", fields: [deletedById], references: [id])
+  deletedById String? 
 }
