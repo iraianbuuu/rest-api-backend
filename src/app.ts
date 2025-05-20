@@ -15,9 +15,11 @@ import {
   USERS_URL,
   TICKETS_URL,
   DOCS_URL,
+  HEALTH_CHECK_URL,
 } from '@utils/api';
 import { metricsMiddleware } from '@middleware/metrics.middleware';
 import rateLimiter from '@middleware/rate-limit.middleware';
+import { healthCheck } from '@utils/health-check';
 
 const app = express();
 app.use(cors());
@@ -27,6 +29,7 @@ app.use(rateLimiter);
 app.use(metricsMiddleware);
 app.use(logMiddleware);
 app.use(METRICS_URL, getMetrics);
+app.use(HEALTH_CHECK_URL,healthCheck);
 app.use(DOCS_URL, swagger.serve, swagger.setup(swaggerDocumentation));
 app.use(AUTH_URL, authRouter);
 app.use(USERS_URL, userRouter);
