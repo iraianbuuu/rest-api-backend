@@ -1,4 +1,6 @@
 import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
 import authRouter from '@modules/auth/auth.routes';
 import { errorMiddleware } from '@middleware/error.middleware';
 import userRouter from '@modules/users/user.routes';
@@ -12,12 +14,14 @@ import {
   AUTH_URL,
   USERS_URL,
   TICKETS_URL,
-  DOCS_URL, 
+  DOCS_URL,
 } from '@utils/api';
 import { metricsMiddleware } from '@middleware/metrics.middleware';
 import rateLimiter from '@middleware/rate-limit.middleware';
-const app = express();
 
+const app = express();
+app.use(cors());
+app.use(helmet());
 app.use(express.json());
 app.use(rateLimiter);
 app.use(metricsMiddleware);
