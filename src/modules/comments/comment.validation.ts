@@ -9,4 +9,8 @@ export const createCommentSchema = z.object({
     }),
 });
 
-
+export const commentIdSchema = z.object({
+    id : z.string().uuid({
+        message : 'Comment Id must be a valid UUID',
+    })
+})

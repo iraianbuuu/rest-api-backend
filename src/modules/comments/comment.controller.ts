@@ -25,7 +25,19 @@ class CommentController {
         }
     }
 
-    deleteComment = async (req: Request, res: Response, next: NextFunction) => {}
+    deleteComment = async (req: Request, res: Response, next: NextFunction) => {
+        try{
+            const {id , commentId} = req.params;
+            const {id : userId} = req.user;
+            await deleteComment(id , commentId , userId);
+            res.status(StatusCode.OK).json({
+                messsage : 'Comment deleted successfully',
+            })
+        }
+        catch(error){
+            next(error)
+        }
+    }
 
     getAllComments = async (req: Request, res: Response, next: NextFunction) => {}
  }

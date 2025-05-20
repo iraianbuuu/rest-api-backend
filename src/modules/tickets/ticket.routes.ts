@@ -10,7 +10,7 @@ import {
 } from './ticket.validation';
 import TicketController from './ticket.controller';
 import CommentController from '../comments/comment.controller';
-import { createCommentSchema } from '../comments/comment.validation';
+import { commentIdSchema, createCommentSchema } from '../comments/comment.validation';
 const ticketController = new TicketController();
 const commentController = new CommentController();
 const {
@@ -23,7 +23,8 @@ const {
 } = ticketController;
 
 const {
-  addComment
+  addComment,
+  deleteComment
 } = commentController;
 
 const ticketRouter = Router();
@@ -53,5 +54,6 @@ ticketRouter.delete('/:id', validate(ticketIdSchema, 'params'), deleteTicket);
 
 // Comments
 ticketRouter.post('/:id/comments', validate(ticketIdSchema, 'params'), validate(createCommentSchema, 'body'), addComment);
+ticketRouter.delete("/:id/comments/:commentId", validate(ticketIdSchema,'params'), validate(commentIdSchema,'params'),deleteComment);
 
 export default ticketRouter;

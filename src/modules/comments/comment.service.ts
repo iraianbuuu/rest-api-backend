@@ -8,7 +8,7 @@ const userService = new UserService();
 const commentRepository = new CommentRepository();
 const { getTicketById } = ticketService;
 const { findUserById } = userService;
-const { addComment } = commentRepository;
+const { addComment , getCommentById,  deleteComment } = commentRepository;
 
 class CommentService {
     addComment = async (ticketId: string, _comment : CommentRequest, authorId: string) => {
@@ -27,9 +27,27 @@ class CommentService {
         return await addComment(ticketId, comment, authorId);
     }
 
-    deleteComment = async () => {}
+    deleteComment = async (ticketId : string , commentId : string , authorId : string) => {
+
+        // Check ticket , comment and user exists
+        const [ticket , author , comment] = await Promise.all([
+            getTicketById(ticketId),
+            findUserById(authorId),
+            getCommentById(commentId),
+        ])
+
+        if(!ticket) throw new NotFoundException('Ticket not found');
+        if(!author) throw new NotFoundException('Author not found');
+        if(!comment) throw new NotFoundException('Comment not found');
+
+        return await deleteComment(commentId , authorId);
+    }
 
     getAllComments = async () => {}
+    
+    getCommentById = async (commentId : string) => {
+        return await getCommentById(commentId);
+    }
 }
 
 export default CommentService;
