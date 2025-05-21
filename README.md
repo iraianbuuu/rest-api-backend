@@ -4,7 +4,7 @@ A robust Ticket Support System REST API crafted using Node.js and TypeScript, de
 
 ## ✨ Features
 
-- 🔐 JWT-based Authentication
+- 🔐 JWT-based Authentication (Access and Refresh Tokens)
 - 👥 Role-based Access Control
 - 🗄️ PostgreSQL Database with Prisma ORM
 - 📝 Request Validation with Zod
@@ -36,7 +36,7 @@ cp .env.example .env
 npm run docker:up
 
 # Run database migrations
-npx prisma migrate dev
+npm run prisma:migrate
 
 # Start development server
 npm run dev
@@ -115,6 +115,25 @@ Note: Status transitions follow specific workflow rules
 
 # Delete Ticket
 DELETE /api/v1/tickets/:id
+Authorization: Bearer <token>
+```
+
+### Comments
+
+```http
+# Add Comment to Ticket
+POST /api/v1/tickets/:id/comments
+Authorization: Bearer <token>
+
+# Get All Comments for a Ticket
+GET /api/v1/tickets/:id/comments
+Authorization: Bearer <token>
+Query Parameters:
+  - page: integer (optional) - Page number for pagination
+  - perPage: integer (optional) - Number of comments per page
+
+# Delete Comment
+DELETE /api/v1/tickets/:id/comments/:commentId
 Authorization: Bearer <token>
 ```
 
