@@ -18,18 +18,41 @@ class CommentRepository {
                 where : {id : commentId},
                 data : {isDeleted : true , deletedById : userId }
             })
+            return deletedComment;
         } catch (error) {
             handleError(error);
         }
     }
 
-    getAllComments = async () => {}
+    getAllCommentsByTicketId = async (limit : number, offset : number , ticketId: string) => {
+        try {
+            const comments = await prisma.comment.findMany({
+                where : {
+                    isDeleted : false,
+                    ticketId : ticketId
+                },
+               skip : offset,
+               take : limit
+            });
+
+            const totalComments = await prisma.comment.count({
+                where : {
+                    isDeleted : false,
+                    ticketId : ticketId
+                }
+            });
+            return {comments , totalComments};
+        } catch (error) {
+            handleError(error);
+        }
+    }
 
     getCommentById = async (commentId : string) => {
         try{
             const comment = await prisma.comment.findUnique({
                 where : {
-                    id : commentId
+                    id : commentId ,
+                    isDeleted : false
                 }
             })
             if(!comment) throw new NotFoundException('Comment not found');

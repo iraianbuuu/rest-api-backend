@@ -24,7 +24,8 @@ const {
 
 const {
   addComment,
-  deleteComment
+  deleteComment,
+  getAllCommentsByTicketId
 } = commentController;
 
 const ticketRouter = Router();
@@ -53,7 +54,8 @@ ticketRouter.patch(
 ticketRouter.delete('/:id', validate(ticketIdSchema, 'params'), deleteTicket);
 
 // Comments
+
 ticketRouter.post('/:id/comments', validate(ticketIdSchema, 'params'), validate(createCommentSchema, 'body'), addComment);
 ticketRouter.delete("/:id/comments/:commentId", validate(ticketIdSchema,'params'), validate(commentIdSchema,'params'),deleteComment);
-
+ticketRouter.get('/:id/comments',getAllCommentsByTicketId);
 export default ticketRouter;

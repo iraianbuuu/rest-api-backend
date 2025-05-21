@@ -8,7 +8,7 @@ const userService = new UserService();
 const commentRepository = new CommentRepository();
 const { getTicketById } = ticketService;
 const { findUserById } = userService;
-const { addComment , getCommentById,  deleteComment } = commentRepository;
+const { addComment , getCommentById,  deleteComment , getAllCommentsByTicketId } = commentRepository;
 
 class CommentService {
     addComment = async (ticketId: string, _comment : CommentRequest, authorId: string) => {
@@ -43,7 +43,9 @@ class CommentService {
         return await deleteComment(commentId , authorId);
     }
 
-    getAllComments = async () => {}
+    getAllCommentsByTicketId = async (limit : number, offset : number , ticketId : string) => {
+        return await getAllCommentsByTicketId(limit, offset, ticketId);
+    }
     
     getCommentById = async (commentId : string) => {
         return await getCommentById(commentId);

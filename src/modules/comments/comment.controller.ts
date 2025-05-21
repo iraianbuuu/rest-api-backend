@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import { CommentRequest } from './comment.model';
+import { CommentRequest, ICommentQueryParams } from './comment.model';
 import CommentService from './comment.service';
 import { StatusCode } from '@utils/status-code';
+import { getPaginationationParameters } from '@utils/index';
+import { NotFoundException } from '@exceptions/custom.exception';
 const commentService = new CommentService();
 const {
     addComment,
     deleteComment,
-    getAllComments,
+    getAllCommentsByTicketId
 } = commentService;
 
 class CommentController {
@@ -39,7 +41,30 @@ class CommentController {
         }
     }
 
-    getAllComments = async (req: Request, res: Response, next: NextFunction) => {}
+    getAllCommentsByTicketId = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const {id : ticketId} = req.params;
+            const commentQueryParams = req.query as ICommentQueryParams;
+            const { page, perPage, limit, offset } = getPaginationationParameters(
+            commentQueryParams.page as string,
+            commentQueryParams.perPage as string,
+        );
+
+        const comments = await getAllCommentsByTicketId(limit, offset, ticketId);
+        if(!comments) throw new NotFoundException('No comments found');
+
+        res.status(StatusCode.OK).json({
+            message : 'Comments fetched successfully',
+            data : comments,
+            page,
+            perPage,
+            total_pages : Math.ceil(comments.totalComments / limit),
+            total_comments : comments.totalComments,
+        })
+        } catch (error) {
+            next(error);
+        }
+    }
  }
 
 export default CommentController;
