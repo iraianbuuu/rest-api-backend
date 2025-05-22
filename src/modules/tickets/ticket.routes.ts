@@ -10,7 +10,11 @@ import {
 } from './ticket.validation';
 import TicketController from './ticket.controller';
 import CommentController from '../comments/comment.controller';
-import { commentIdSchema, createCommentSchema } from '../comments/comment.validation';
+import {
+  commentIdSchema,
+  createCommentSchema,
+} from '../comments/comment.validation';
+import cacheMiddleware from '@middleware/caching.middleware';
 const ticketController = new TicketController();
 const commentController = new CommentController();
 const {
@@ -22,11 +26,8 @@ const {
   updateTicket,
 } = ticketController;
 
-const {
-  addComment,
-  deleteComment,
-  getAllCommentsByTicketId
-} = commentController;
+const { addComment, deleteComment, getAllCommentsByTicketId } =
+  commentController;
 
 const ticketRouter = Router();
 ticketRouter.use(authMiddleware);
@@ -36,6 +37,7 @@ ticketRouter.get(
   '/',
   validate(getTicketsSchema, 'query'),
   roleMiddleware,
+  cacheMiddleware,
   getTickets,
 );
 ticketRouter.post('/', validate(createTicketSchema, 'body'), createTicket);
@@ -55,7 +57,17 @@ ticketRouter.delete('/:id', validate(ticketIdSchema, 'params'), deleteTicket);
 
 // Comments
 
-ticketRouter.post('/:id/comments', validate(ticketIdSchema, 'params'), validate(createCommentSchema, 'body'), addComment);
-ticketRouter.delete("/:id/comments/:commentId", validate(ticketIdSchema,'params'), validate(commentIdSchema,'params'),deleteComment);
-ticketRouter.get('/:id/comments',getAllCommentsByTicketId);
+ticketRouter.post(
+  '/:id/comments',
+  validate(ticketIdSchema, 'params'),
+  validate(createCommentSchema, 'body'),
+  addComment,
+);
+ticketRouter.delete(
+  '/:id/comments/:commentId',
+  validate(ticketIdSchema, 'params'),
+  validate(commentIdSchema, 'params'),
+  deleteComment,
+);
+ticketRouter.get('/:id/comments', cacheMiddleware, getAllCommentsByTicketId);
 export default ticketRouter;

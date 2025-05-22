@@ -4,6 +4,7 @@ import { authMiddleware } from '@middleware/auth.middleware';
 import { roleMiddleware } from '@middleware/role.middleware';
 import { validate } from '@middleware/validate.middleware';
 import { updateUserValidation, getUsersValidation } from './user.validation';
+import cacheMiddleware from '@middleware/caching.middleware';
 const userRouter = Router();
 userRouter.use(authMiddleware);
 const userController = new UserController();
@@ -17,6 +18,7 @@ userRouter.get(
   '/',
   validate(getUsersValidation, 'query'),
   roleMiddleware,
+  cacheMiddleware,
   getUsers,
 );
 

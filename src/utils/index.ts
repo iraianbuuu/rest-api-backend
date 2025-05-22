@@ -27,3 +27,6 @@ export const getPaginationationParameters = (page: string, perPage: string) => {
 
   return { page: validPage, perPage: validPerPage, limit, offset };
 };
+
+export const TTL = 600;
+export const EXPIRE_TIME = 'EX';
