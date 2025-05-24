@@ -5,6 +5,7 @@ import { config } from '@config';
 import { handleError } from '@utils/index';
 import { UnauthorizedException } from '@exceptions/custom.exception';
 import { UserPayload } from '../users/user.model';
+import { hash, compare } from 'bcrypt';
 class AuthService {
   async registerUser(
     email: string,
@@ -18,7 +19,7 @@ class AuthService {
         data: {
           name,
           email,
-          password,
+          password: await hash(password, 10),
           role: role as Role,
           project: project as Project,
         },
@@ -33,15 +34,19 @@ class AuthService {
       const user = await prisma.user.findUnique({
         where: {
           email,
-          password,
         },
         select: {
           id: true,
           name: true,
           role: true,
+          password: true,
         },
       });
       if (!user) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+      const isPasswordValid = await compare(password, user.password);
+      if (!isPasswordValid) {
         throw new UnauthorizedException('Invalid credentials');
       }
       const userPayload: UserPayload = {
