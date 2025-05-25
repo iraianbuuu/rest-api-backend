@@ -13,6 +13,7 @@ A robust Ticket Support System REST API crafted using Node.js and TypeScript, de
 - 🐳 Docker Support
 - 🔍 ESLint & Prettier Configuration
 - 🧪 TypeScript Support
+- 🔄 Redis Integration for Caching
 
 ## 📋 Prerequisites
 
@@ -40,6 +41,16 @@ npm run prisma:migrate
 
 # Start development server
 npm run dev
+```
+
+## 🐳 Seperate Docker Container
+
+```
+# Build the image
+docker build -t ziraa:v1 .
+
+# Run the application
+docker run -d -p 9876:9876 --net ziraa-container_ziraa-network --env-file .env.docker --name ziraa-backend-server ziraa:v1
 ```
 
 ## 📚 API Documentation
@@ -153,13 +164,16 @@ GET /api/v1/api-docs
 # Development
 npm run dev          # Start development server
 
-# Production 
+# Production
 npm run build        # Build for production
 npm start            # Start production server
 
 # Code Quality
 npm run lint        # Run ESLint
 npm run format      # Run Prettier
+
+# Database
+npm run prisma:migrate # Run database migrations
 
 # Docker
 npm run docker:up   # Start Docker containers
@@ -170,6 +184,9 @@ npm run docker:down # Stop Docker containers
 
 ```
 📦 ziraa
+├── 📂 grafana
+│   ├── 📄 log.dashboard.json / Loki logs
+│   └── 📄 monitoring.dashboard.json / Application monitoring
 ├── 📂 src
 │   ├── 📂 config/ Configuration files
 │   ├── 📂 exceptions/ Custom exceptions
@@ -181,10 +198,13 @@ npm run docker:down # Stop Docker containers
 ├── 📂 prisma
 │   └── 📄 schema.prisma / Database schema
 ├── 📄 .env
+├── 📄 .dockerignore
+├── 📄 .env.docker
 ├── 📄 .env.example
 ├── 📄 .gitignore
 ├── 📄 .prettierrc
 ├── 📄 docker-compose.yaml
+├── 📄 Dockerfile
 ├── 📄 eslint.config.mjs
 ├── 📄 openapi.json
 ├── 📄 package-lock.json
@@ -238,6 +258,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - [Prometheus](https://prometheus.io/) - Metrics collection and alerting
 - [Grafana](https://grafana.com/) - Metrics visualization
 - [Loki](https://grafana.com/oss/loki/) - Log aggregation
+- [Redis](https://redis.io/) - In-memory data store
 - [ESLint](https://eslint.org/) - Code linting
 - [Prettier](https://prettier.io/) - Code formatting
 
