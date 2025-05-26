@@ -62,6 +62,8 @@ class AuthService {
       handleError(error);
     }
   }
+
+  async refreshToken(refreshToken: string) {}
 }
 
 export default AuthService;
