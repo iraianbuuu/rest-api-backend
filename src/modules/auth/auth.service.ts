@@ -1,11 +1,10 @@
 import { Project, Role } from '@prisma/client';
 import prisma from '@config/prisma';
-import jwt from 'jsonwebtoken';
-import { config } from '@config';
 import { handleError } from '@utils/index';
 import { UnauthorizedException } from '@exceptions/custom.exception';
 import { UserPayload } from '../users/user.model';
 import { hash, compare } from 'bcrypt';
+import { generateAccessToken, generateRefreshToken } from '@utils/jwt';
 class AuthService {
   async registerUser(
     email: string,
@@ -54,16 +53,15 @@ class AuthService {
         name: user.name,
         role: user.role as Role,
       };
-      const token = jwt.sign(userPayload, config.secretKey, {
-        expiresIn: '1h',
-      });
-      return { token };
+      const accessToken = generateAccessToken(userPayload);
+      const refreshToken = generateRefreshToken(userPayload);
+      return { accessToken, refreshToken };
     } catch (error: unknown) {
       handleError(error);
     }
   }
 
-  async refreshToken(refreshToken: string) {}
+  async refreshToken(refreshToken: string) { }
 }
 
 export default AuthService;

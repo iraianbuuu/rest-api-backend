@@ -1,11 +1,28 @@
+import { config } from '@config';
 import jwt from 'jsonwebtoken';
 
-const generateToken = (payload: any, secret: string, expiresIn: string = '1h') => {}
+const generateAccessToken = (payload: any) => {
+    const token = jwt.sign(payload, config.secretKey, {
+        expiresIn: config.refreshTokenExpiresIn,
+    });
+    return token;
+}
 
-const verifyToken = (token: string, secret: string) => {}
+const verifyAccessToken = (token: string) => {
+    const decoded = jwt.verify(token, config.secretKey);
+    return decoded;
+}
 
-const generateRefreshToken = (payload: any, secret: string, expiresIn: string = '7d') => {}
+const generateRefreshToken = (payload: any) => {
+    const token = jwt.sign(payload, config.refreshSecretKey, {
+        expiresIn: config.refreshTokenExpiresIn,
+    });
+    return token;
+}
 
-const verifyRefreshToken = (refreshToken: string, secret: string) => {}
+const verifyRefreshToken = (refreshToken: string) => {
+    const decoded = jwt.verify(refreshToken, config.refreshSecretKey);
+    return decoded;
+}
 
-export { generateToken, verifyToken, generateRefreshToken, verifyRefreshToken };
+export { generateAccessToken, verifyAccessToken, generateRefreshToken, verifyRefreshToken };

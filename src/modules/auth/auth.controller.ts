@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import AuthService from './auth.service';
 import { StatusCode } from '@utils/status-code';
+import { config } from '@config';
 const authService = new AuthService();
 const { registerUser, loginUser } = authService;
 class AuthController {
@@ -28,10 +29,15 @@ class AuthController {
     try {
       const { email, password } = req.body;
       const authToken = await loginUser(email, password);
-      const token = authToken?.token;
+      const token = authToken?.accessToken;
       res
         .status(StatusCode.OK)
         .json({ message: 'User logged in successfully', token });
+      res.cookie('refreshToken', authToken?.refreshToken, {
+        httpOnly: true,
+        secure: config.nodeEnv === 'production',
+        maxAge: config.refreshTokenExpiresIn,
+      });
     } catch (error) {
       next(error);
     }

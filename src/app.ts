@@ -20,11 +20,12 @@ import {
 import { metricsMiddleware } from '@middleware/metrics.middleware';
 import rateLimiter from '@middleware/rate-limit.middleware';
 import healthCheckRouter from '@utils/health-check';
-
+import cookieParser from 'cookie-parser';
 const app = express();
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
+app.use(cookieParser());
 app.use(rateLimiter);
 app.use(metricsMiddleware);
 app.use(logMiddleware);

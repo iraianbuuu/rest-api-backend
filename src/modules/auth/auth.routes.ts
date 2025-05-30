@@ -15,6 +15,6 @@ authRouter.post(
 );
 
 authRouter.post('/login', validate(loginUserSchema, 'body'), loginUser);
-authRouter.post('/refresh-token');
+//authRouter.post('/refresh-token');
 
 export default authRouter;
