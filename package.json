@@ -19,12 +19,12 @@
   "license": "ISC",
   "type": "commonjs",
   "_moduleAliases": {
-    "@config": "src/config",
-    "@controllers": "src/controllers",
-    "@middleware": "src/middleware",
-    "@modules": "src/modules",
-    "@utils": "src/utils",
-    "@exceptions": "src/exceptions"
+    "@config": "dist/src/config",
+    "@controllers": "dist/src/controllers",
+    "@middleware": "dist/src/middleware",
+    "@modules": "dist/src/modules",
+    "@utils": "dist/src/utils",
+    "@exceptions": "dist/src/exceptions"
   },
   "devDependencies": {
     "@eslint/js": "^9.26.0",
