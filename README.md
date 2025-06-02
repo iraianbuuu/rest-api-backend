@@ -33,8 +33,11 @@ npm install
 # Set up environment variables
 cp .env.example .env
 
-# Using Docker or manually set up PostgreSQL
+# Start the docker services
 npm run docker:up
+
+# Run primsa setup
+npx prisma generate
 
 # Run database migrations
 npm run prisma:migrate
